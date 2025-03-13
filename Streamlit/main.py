@@ -65,10 +65,10 @@ elif page == "Machine Learning Demo":
     habitat = st.selectbox("Habitat", options=list(mapping["habitat"].keys()))
     season = st.selectbox("Season", options=list(mapping["season"].keys()))
     
-    model_choice = st.selectbox("เลือกโมเดล", options=["KNN", "Random Forest"], index=0)
+    model_choice = st.selectbox("เลือกโมเดล", options=["Logistic Regression", "Random Forest"], index=0)
     
     if st.button("Predict"):
-        model_path = "Model/mushroom_model_logreg.pkl" if model_choice == "KNN" else "Model/mushroom_model_RandomForest.pkl"
+        model_path = "Model/mushroom_model_logreg.pkl" if model_choice == "Logistic Regression" else "Model/mushroom_model_RandomForest.pkl"
         with open(model_path, "rb") as file:
             model = pickle.load(file)
         
