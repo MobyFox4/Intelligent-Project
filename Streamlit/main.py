@@ -68,7 +68,7 @@ elif page == "Machine Learning Demo":
     model_choice = st.selectbox("เลือกโมเดล", options=["KNN", "Random Forest"], index=0)
     
     if st.button("Predict"):
-        model_path = "Model/mushroom_model_KNN.pkl" if model_choice == "KNN" else "Model/mushroom_model_RandomForest.pkl"
+        model_path = "Model/mushroom_model_logreg.pkl" if model_choice == "KNN" else "Model/mushroom_model_RandomForest.pkl"
         with open(model_path, "rb") as file:
             model = pickle.load(file)
         
