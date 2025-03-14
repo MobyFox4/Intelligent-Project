@@ -433,7 +433,7 @@ elif page == "Neural Network Model":
         image = Image.open(uploaded_file)
         st.image(image, caption="รูปที่อัปโหลด", use_container_width=True)
 
-        model = tf.keras.models.load_model("Model/Dog_Cat_ImagePredict_model.h5")
+        model = tf.keras.models.load_model("Model/Dog_Cat_Model.tflite")
         
         # ปุ่ม Predict
         if st.button("🔍 Predict"):
