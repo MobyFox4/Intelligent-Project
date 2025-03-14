@@ -4,7 +4,14 @@ import pickle
 import numpy as np
 import tensorflow as tf
 import pandas as pd
+import gdown
 from PIL import Image
+
+def preprocess_image(image):
+    image = image.resize((150, 150))
+    image = np.array(image) / 255.0 
+    image = np.expand_dims(image, axis=0)
+    return image
 
 # Code ML
 MLcode1 = "import pandas as pd\ndf = pd.read_csv('../Dataset/mushroom_overload.csv')\ndf"
@@ -416,24 +423,26 @@ elif page == "Machine Learning Demo":
 
     
 elif page == "Neural Network Model":
-    
     st.title("🤖 Neural Network Demo 🤖")
     st.write("อัปโหลดไฟล์รูปภาพเพื่อเช็คว่าเป็น 🐶หมา หรือ 🐱แมว")
 
-# อัปโหลดรูปภาพ
-uploaded_file = st.file_uploader("เลือกไฟล์รูปภาพ", type=["jpg", "jpeg", "png"])
+    # อัปโหลดรูปภาพ
+    uploaded_file = st.file_uploader("เลือกไฟล์รูปภาพ", type=["jpg", "jpeg", "png"])
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="รูปที่อัปโหลด", use_column_width=True)
+    if uploaded_file is not None:
+        
+        image = Image.open(uploaded_file)
+        st.image(image, caption="รูปที่อัปโหลด", use_container_width=True)
 
-    # ปุ่ม Predict
-    if st.button("🔍 Predict"):
-        processed_image = preprocess_image(image)
-        prediction = model.predict(processed_image)
-        result = "🐶 หมา" if prediction[0][0] > 0.5 else "🐱 แมว"
+        model = tf.keras.models.load_model("Model/Dog_Cat_ImagePredict_model.h5")
+        
+        # ปุ่ม Predict
+        if st.button("🔍 Predict"):
+            processed_image = preprocess_image(image)
+            prediction = model.predict(processed_image)
+            result = "🐶 หมา" if prediction[0][0] > 0.5 else "🐱 แมว"
 
-        st.subheader("🔎 ผลลัพธ์การทำนาย:")
-        st.success(result)
+            st.subheader("🔎 ผลลัพธ์การทำนาย:")
+            st.success(result)
 
 
