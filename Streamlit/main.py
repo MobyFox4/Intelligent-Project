@@ -4,7 +4,6 @@ import pickle
 import numpy as np
 import tensorflow as tf
 import pandas as pd
-import gdown
 from PIL import Image
 
 def preprocess_image(image):
