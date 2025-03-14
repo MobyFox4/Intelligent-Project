@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import pandas as pd
 from PIL import Image
+import tensorflow.lite as tflite
 
 def preprocess_image(image):
     image = image.resize((150, 150))
@@ -433,12 +434,19 @@ elif page == "Neural Network Model":
         image = Image.open(uploaded_file)
         st.image(image, caption="รูปที่อัปโหลด", use_container_width=True)
 
-        model = tf.keras.models.load_model("Model/Dog_Cat_Model.tflite")
+        interpreter = tflite.Interpreter(model_path="Model/Dog_Cat_Model.tflite")
+        interpreter.allocate_tensors() 
+        
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
         
         # ปุ่ม Predict
         if st.button("🔍 Predict"):
-            processed_image = preprocess_image(image)
-            prediction = model.predict(processed_image)
+            
+            input_data = preprocess_image(image)
+            interpreter.set_tensor(input_details[0]['index'], input_data)
+            interpreter.invoke()  # รันโมเดล
+            prediction = interpreter.get_tensor(output_details[0]['index'])
             result = "🐶 หมา" if prediction[0][0] > 0.5 else "🐱 แมว"
 
             st.subheader("🔎 ผลลัพธ์การทำนาย:")
