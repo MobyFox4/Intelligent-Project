@@ -242,6 +242,7 @@ if page == "Machine Learning":
     st.header("🗂️ Dataset ที่ใช้")
     st.subheader("🍄Mushroom Overload| 6.7M Rows")
     st.markdown("โหลดจาก Kaggle: https://www.kaggle.com/datasets/bwandowando/mushroom-overload/data")
+    st.markdown("Credit : [Kaggle - bwandowando](https://www.kaggle.com/bwandowando)")
     st.subheader("📊 ตัวอย่างข้อมูลจาก Dataset")
     st.dataframe(df.head(20))
     st.subheader("📄 Features")
@@ -320,6 +321,7 @@ elif page == "Neural Network":
     st.header("🗂️ Dataset ที่ใช้")
     st.subheader("Cats and Dogs image classification")
     st.markdown("โหลดจาก Kaggle: https://www.kaggle.com/datasets/samuelcortinhas/cats-and-dogs-image-classification")
+    st.markdown("Credit : [Kaggle - samuelcortinhas](https://www.kaggle.com/samuelcortinhas)")
     st.subheader("📄 Features")
     st.markdown("- **รูปแมว** : 349 รูป\n- **รูปสุนัข** : 348 รูป")
     
