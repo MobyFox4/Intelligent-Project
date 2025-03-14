@@ -420,7 +420,7 @@ elif page == "Machine Learning Demo":
                                 mapping["habitat"][habitat], mapping["season"][season]]])
         
         prediction = model.predict(input_data)
-        result = "🍄 เป็นพิษ" if prediction[0] == 1 else "✅ ปลอดภัย"
+        result = "🍄 เป็นพิษ" if prediction[0] == 0 else "✅ ปลอดภัย"
         st.success(f"ผลลัพธ์: {result}")
 
     
