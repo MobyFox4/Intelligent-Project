@@ -206,7 +206,7 @@ print(f"Validation Accuracy: {validation_acc:.2f}")"""
 # สร้าง Navbar ด้านบน
 page = option_menu(
     menu_title=None,  # ซ่อนชื่อเมนู
-    options=["Machine Learning", "Neural Network", "Machine Learning Demo", "Neural Network Model"],
+    options=["Machine Learning", "Neural Network", "Machine Learning Demo", "Neural Network Demo"],
     icons=["cast", "cast", "cast", "cast"],  # ไอคอนที่ใช้
     menu_icon="cast",
     default_index=0,
@@ -424,7 +424,7 @@ elif page == "Machine Learning Demo":
         st.success(f"ผลลัพธ์: {result}")
 
     
-elif page == "Neural Network Model":
+elif page == "Neural Network Demo":
     st.title("🤖 Neural Network Demo 🤖")
     st.write("อัปโหลดไฟล์รูปภาพเพื่อเช็คว่าเป็น 🐶หมา หรือ 🐱แมว")
 
