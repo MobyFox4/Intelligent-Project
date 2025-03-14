@@ -1,8 +1,12 @@
-Dataset ที่ใช้
-1.🍄Mushroom Overload| 6.7M Rows \n
-โหลดได้ที่ https://www.kaggle.com/datasets/bwandowando/mushroom-overload/data \n
-credit : https://www.kaggle.com/bwandowando \n
+# 📊 Dataset Information
 
-2.Cats and Dogs image classification \n
-https://www.kaggle.com/datasets/samuelcortinhas/cats-and-dogs-image-classification \n
-credit : https://www.kaggle.com/samuelcortinhas \n
+## 🍄 Mushroom Overload | 6.7M Rows
+- **Description**: Dataset ขนาดใหญ่เกี่ยวกับลักษณะของเห็ดที่ทั้งมีพิษและไม่มีพิษ
+- **Download**: https://www.kaggle.com/datasets/bwandowando/mushroom-overload/data
+- **Credit**: [bwandowando](https://www.kaggle.com/bwandowando)
+
+## 🐶🐱 Cats and Dogs Image Classification
+- **Description**: Dataset รูปของหมาและแมว
+- **Download**: https://www.kaggle.com/datasets/samuelcortinhas/cats-and-dogs-image-classification
+- **Credit**: [Samuel Cortinhas](https://www.kaggle.com/samuelcortinhas)
+
