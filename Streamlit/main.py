@@ -85,8 +85,8 @@ elif page == "Machine Learning Demo":
 
     
 elif page == "Neural Network Model":
-    st.title("🤖 Neural Network Model 🤖")
-    st.write("กรอกข้อมูลเพื่อทำนายการฉ้อโกงทางการเงิน")
+    st.title("🤖 Neural Network Demo 🤖")
+    st.write("อัปโหลดไฟล์รูปภาพเพื่อเช็คว่าเป็น หมา หรือ แมว")
     
     step = st.number_input("Step", min_value=0, step=1)
     type_ = st.selectbox("Transaction Type", options=list(type_mapping.values()), format_func=lambda x: list(type_mapping.keys())[list(type_mapping.values()).index(x)])
