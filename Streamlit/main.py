@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 import tensorflow as tf
 import pandas as pd
+import gdown
 
 # Code ML
 MLcode1 = "import pandas as pd\ndf = pd.read_csv('../Dataset/mushroom_overload.csv')\ndf"
@@ -122,7 +123,78 @@ print("F1 Score (LogReg):", f1_logreg)
 """
 
 # Code NN
-NNcode1 = "import tensorflow as tf"
+NNcode1 = """import os
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten
+from tensorflow.keras.optimizers import SGD, Adam
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.applications import MobileNetV2"""
+
+NNcode2 = "train_dir = '../Dataset/Dog&Cat/train'"
+
+NNcode3 = """train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=45,
+    width_shift_range=0.3,
+    height_shift_range=0.3,
+    shear_range=0.3,
+    zoom_range=0.3,
+    horizontal_flip=True,
+    brightness_range=[0.8, 1.2],
+    fill_mode='nearest',
+    validation_split=0.2)
+
+validation_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)"""
+
+NNcode4 = """train_generator = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(150, 150),
+    batch_size=32,
+    class_mode='binary',
+    subset='training')
+
+validation_generator = validation_datagen.flow_from_directory(
+    train_dir,
+    target_size=(150, 150),
+    batch_size=32,
+    class_mode='binary',
+    subset='validation')"""
+    
+NNcode5 = """base_model = MobileNetV2(input_shape=(150, 150, 3), include_top=False, weights='imagenet')
+base_model.trainable = False"""
+
+NNcode6 = """model = Sequential([
+    base_model,
+    Flatten(),
+    Dense(512, activation='relu'),
+    Dropout(0.5),  # Regularization
+    Dense(1, activation='sigmoid')  # Binary classification (dog vs cat)
+])"""
+
+NNcode7 = """model.compile(loss='binary_crossentropy',
+              optimizer=SGD(learning_rate=0.001, momentum=0.9),
+              metrics=['accuracy'])
+
+model.summary()"""
+
+NNcode8 = """early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+lr_scheduler = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2, verbose=1)
+
+steps_per_epoch = train_generator.samples // train_generator.batch_size
+validation_steps = validation_generator.samples // validation_generator.batch_size"""
+
+NNcode9 = """history = model.fit(
+    train_generator,
+    steps_per_epoch=steps_per_epoch,
+    epochs=20,
+    validation_data=validation_generator,
+    validation_steps=validation_steps,
+    callbacks=[early_stopping, lr_scheduler])"""
+
+NNcode10 = """validation_loss, validation_acc = model.evaluate(validation_generator)
+print(f"Validation Accuracy: {validation_acc:.2f}")"""
 
 # สร้าง Navbar ด้านบน
 page = option_menu(
@@ -166,6 +238,7 @@ if page == "Machine Learning":
     st.subheader("📊 ตัวอย่างข้อมูลจาก Dataset")
     st.dataframe(df.head(20))
     st.subheader("📄 Features")
+    
     features_info = """
     - **cap-diameter (m)**: float number in cm  
     - **cap-shape (n)**: bell=b, conical=c, convex=x, flat=f, sunken=s, spherical=p, others=o  
@@ -222,6 +295,8 @@ if page == "Machine Learning":
     st.text("จากนั้นทำการแบ่งข้อมูลออกเป็นส่วนที่ใช้ฝึก 80% และใช้ทดสอบ 20% โดยให้คอลัมน์ที่เป็นผลลัพธ์ในการทำนายที่เราต้องการเก็บไว้ใน y ซึ่งก็คือ class ที่เป็นตัวบอกสถานะว่าเป็นเห็ดพิษหรือไม่ และที่เหลือไว้ใน x")
     st.code(MLcode7, language="python")
     
+    st.header("🤖 ฝึกโมเดล")
+    st.text("")
     st.text("โมเดลตัวแรกจะเลือกใช้ Random Forest ซึ่งเป็นอัลกอริธึมของ Machine Learning ที่ใช้สำหรับ Classification ซึ่งวิธีการของ Random Forest จะสร้าง Dicision Trees ออกมาหลายๆต้นออกมาแล้วจะนำผลลัพธ์ที่ได้จาก Dicision Trees ทั้งหมดมาเช็คดูว่าผลลัพธ์ที่ออกมาส่วนใหญ่เป็นอะไร แล้วจะให้ผลลัพธ์ส่วนใหญ่นั้นเป็นคำตอบออกมา หลังจากที่ได้โมเดลออกมาแล้วก็ลองทำการทดสอบโมเดลเพื่อดูค่า Confusion Matrix เพื่อแสดงจำนวน ค่าทำนายที่ถูกต้องและผิดพลาด | Accuracy ใช้วัดค่าความแม่นยำของโมเดล | Precision ใช้วัดความแม่นยำของการทำนายผล | Recall ใช้วัดค่าความถูกต้อง | F1 Score ใช้วัดค่าความสมดุลระหว่าง Precision และ Recall")
     st.code(MLcode8, language="python")
     st.image("Streamlit/image/ML/ML7.png")
@@ -235,8 +310,71 @@ if page == "Machine Learning":
     st.text("หลังจากการเทรนโมเดลทั้งสองแบบจะเห็นได้ว่าอัลกอริธึมแบบ Random Forest จะความแม่นยำมากกว่า Logistic Regression อยู่มากเพราะมีการใช้ Dicision trees จำนวนมากมาใช้โหวตตัดสินใจ")
     
 elif page == "Neural Network":
-    st.title("🧠 Neural Network 🧠")
-    st.write("🛠️ maintenance 🛠️")
+    st.header("🗂️ Dataset ที่ใช้")
+    st.subheader("Cats and Dogs image classification")
+    st.markdown("โหลดจาก Kaggle: https://www.kaggle.com/datasets/samuelcortinhas/cats-and-dogs-image-classification")
+    st.subheader("📄 Features")
+    st.markdown("- **รูปแมว** : 349 รูป\n- **รูปสุนัข** : 348 รูป")
+    
+    st.subheader("🤖 การฝึกโมเดล")
+    st.text("")
+    st.text("1. นำเข้าไลบรารีที่จำเป็น")
+    st.code(NNcode1, language="python")
+    
+    NNtext1 = """tensorflow.keras → ใช้สร้างโมเดล Deep Learning\n
+  ImageDataGenerator → ใช้เพิ่มข้อมูลเทียม (Data Augmentation)\n
+  Sequential → ใช้กำหนดโครงสร้างของโมเดล\n
+  Dense, Dropout, Flatten → ใช้เพิ่มเลเยอร์ในโมเดล\n
+  SGD, Adam → ตัว Optimizer ปรับค่าพารามิเตอร์ของโมเดล\n
+  EarlyStopping, ReduceLROnPlateau → Callback ป้องกัน Overfitting\n
+  MobileNetV2 → โมเดลสำเร็จรูปที่ถูกฝึกมาจาก ImageNet"""
+  
+    st.markdown(NNtext1)
+    
+    st.text("")
+    st.text("2. กำหนดพาธของข้อมูล")
+    st.code(NNcode2, language="python")
+    
+    st.text("")
+    st.text("3. ทำ Data Augmentation (เพิ่มข้อมูลเทียม)")
+    st.code(NNcode3, language="python")
+    
+    st.text("")
+    st.text("4. สร้าง Training & Validation Generator")
+    st.code(NNcode4, language="python")
+    
+    st.text("")
+    st.text("5. ใช้ MobileNetV2 เป็น Base Model")
+    st.code(NNcode5, language="python")
+
+    st.text("")
+    st.text("6. สร้างโมเดลแบบ Fine-Tuning")
+    st.code(NNcode6, language="python")
+    
+    NNtext2 = """ใช้ Flatten() → ทำให้ Feature Maps เป็นเวกเตอร์เดียว\n
+ ใช้ Dense(512, activation='relu') → Fully Connected Layer\n
+ ใช้ Dropout(0.5) → ลดโอกาส Overfitting\n
+ ใช้ Sigmoid Activation → เพราะเป็นปัญหา Binary Classification"""
+    
+    st.markdown(NNtext2)
+    
+    st.text("")
+    st.text("7. คอมไพล์โมเดล")
+    st.code(NNcode7, language="python")
+    
+    st.text("")
+    st.text("8. กำหนด Callback ป้องกัน Overfitting /คำนวณจำนวนขั้นตอนการ Train")
+    st.code(NNcode8, language="python")
+
+    st.text("")
+    st.text("9. ฝึกโมเดล (Training)")
+    st.code(NNcode9, language="python")
+    
+    st.text("")
+    st.text("10. ประเมินโมเดล (Evaluation)")
+    st.code(NNcode10, language="python")
+    
+    
     
 elif page == "Machine Learning Demo":
     st.title("🍄 Machine Learning Demo🍄 ")
@@ -280,20 +418,5 @@ elif page == "Machine Learning Demo":
 elif page == "Neural Network Model":
     st.title("🤖 Neural Network Demo 🤖")
     st.write("อัปโหลดไฟล์รูปภาพเพื่อเช็คว่าเป็น หมา หรือ แมว")
-    
-    step = st.number_input("Step", min_value=0, step=1)
-    type_ = st.selectbox("Transaction Type", options=list(type_mapping.values()), format_func=lambda x: list(type_mapping.keys())[list(type_mapping.values()).index(x)])
-    amount = st.number_input("Amount", min_value=0.0, step=0.01)
-    oldbalanceOrg = st.number_input("Old Balance Origin", min_value=0.0, step=0.01)
-    newbalanceOrig = st.number_input("New Balance Origin", min_value=0.0, step=0.01)
-    oldbalanceDest = st.number_input("Old Balance Destination", min_value=0.0, step=0.01)
-    newbalanceDest = st.number_input("New Balance Destination", min_value=0.0, step=0.01)
-    
-    if st.button("Predict"):
-        model = tf.keras.models.load_model("Model/fraud_detection_model.keras")
-        input_data = np.array([[step, type_, amount, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest]])
-        prediction = model.predict(input_data)
-        result = "🚨 Fraud Detected" if prediction[0] > 0.5 else "✅ No Fraud"
-        st.success(f"ผลลัพธ์: {result}")
 
 
