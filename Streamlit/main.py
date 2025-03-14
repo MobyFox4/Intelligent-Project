@@ -8,10 +8,10 @@ from PIL import Image
 import tensorflow.lite as tflite
 
 def preprocess_image(image):
-    image = image.resize((150, 150))
-    image = np.array(image) / 255.0 
-    image = np.expand_dims(image, axis=0)
-    return image
+    img = image.convert("RGB").resize((150, 150))  # แปลงเป็น RGB และปรับขนาด
+    img_array = np.array(img, dtype=np.float32) / 255.0  # Normalize 0-1
+    img_array = np.expand_dims(img_array, axis=0)  # เพิ่ม batch dimension -> (1, 150, 150, 3)
+    return img_array
 
 # Code ML
 MLcode1 = "import pandas as pd\ndf = pd.read_csv('../Dataset/mushroom_overload.csv')\ndf"
